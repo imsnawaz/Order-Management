@@ -1,0 +1,105 @@
+<template>
+	<lightning-card icon-name="standard:fulfillment_order">
+		<h1 slot="title"><b>Products</b></h1>
+		<div slot="actions">
+			<lightning-button-icon
+				icon-name="utility:cart"
+				size="large"
+				icon-class="product-tile-button"
+				variant="bare"
+				alternative-text="Go to Cart"
+				onclick={handleOpenCart}>
+			</lightning-button-icon>
+		</div>
+		<div class="slds-card__body_inner">
+			<!-- Start product list -->
+			<template if:true={products.data}>
+                <lightning-input type="search"
+	            onchange={handleSearchTermChange}
+	            variant="label-hidden"
+	            class="slds-m-bottom_small"
+	            label="Search"
+	            placeholder="Search for products"
+	            value={searchTerm}>
+				</lightning-input>
+				<lightning-button variant="brand" label="Clear" onclick={handleClear} ></lightning-button>
+				<lightning-layout multiple-rows="true" pull-to-boundary="small">
+					<template for:each={products.data} for:item="product">
+						<lightning-layout-item key={product.Id} size="3" class="slds-p-around_x-small">
+							<c-product-tile product={product} oncheckoutview={handleCheckoutView} onproductview={handleProductView}></c-product-tile>
+						</lightning-layout-item>
+					</template>
+                </lightning-layout>
+                <!-- No products found -->
+                <template if:false={hasResults}>
+	            <div class="slds-align_absolute-center slds-m-vertical_small">
+		            This is disturbing, we did not find results...
+	            </div>
+                </template>
+            </template>
+            
+			<!-- End product list -->
+			<!-- Data failed to load -->
+			<template if:true={products.error}>
+				<div class="slds-text-color_error">
+					An error occurred while loading the product list
+				</div>
+			</template>
+		</div>
+	</lightning-card>
+	<template if:true={showup}>
+		<template if:true={showplist}>
+		<div class="demo-only">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close" size="medium">
+                            </lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Create Order</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+						<lightning-record-form
+							record-id={recordId}
+							object-api-name={orderObject}
+							fields={myfields}
+							columns="2"
+							onsuccess={handleOrderCreated}
+							oncancel={closeModal}>
+						</lightning-record-form>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+		</div>
+		</template>
+		<template if:false={showplist}>
+		<div class="demo-only">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true" aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open slds-modal_medium">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Edit Products</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+						<lightning-datatable
+                            key-field="Id"
+                            data={selectedProds}
+                            columns={columns}
+							onsave={handleSave}
+                            draft-values={draftValues}>
+						</lightning-datatable>
+					</div>
+					<footer class="slds-modal__footer">
+						<center>Enter the quantity for each product to proceed.</br>
+							Product with blank quantities won't be saved.
+						</center>
+					</footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+		</div>
+		</template>
+	</template>
+</template>

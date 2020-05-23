@@ -1,0 +1,23 @@
+<template>
+    <lightning-card title={product.code} class="product-tile">
+        <div slot="actions">
+            <lightning-button-icon-stateful
+                icon-name="utility:add"
+                selected={isSelected}
+                size="small"
+                variant="border-filled"
+                onclick={handleClick}>
+            </lightning-button-icon-stateful>
+        </div>
+        <div class="slds-p-horizontal_small">
+            <div class="slds-media">
+                <div class="slds-media__body" onclick={handleOpenRecordClick}>
+                    <p class="slds-m-bottom_xx-small">{product.name}</p>
+                    <p class="slds-m-bottom_xx-small">{product.brand}</p>
+                    <p class="slds-m-bottom_xx-small">${product.price}.00</p>
+                    <p class="slds-m-bottom_xx-small">{product.qty} units left</p>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>
