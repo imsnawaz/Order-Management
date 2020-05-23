@@ -1,0 +1,26 @@
+<aura:component implements="lightning:actionOverride,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global" >
+    
+	<aura:attribute name="fields" type="String[]" default="['AccountId','EffectiveDate','ContractId','Status','ShippingAddress']" />
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <aura:attribute name="sObjectName" type="String" default="Order" />
+    <div aura:id="editDialog" role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 class="slds-text-heading--medium">New Order</h2>
+            </div>
+            <div class="slds-modal__content slds-p-around--medium slds-grid slds-wrap ">
+            <lightning:recordForm aura:id="recordViewForm" 
+                                  objectApiName="{!v.sObjectName}"
+                                  fields="{!v.fields}"
+                                  mode="edit"
+                                  columns="2"
+                                  onsuccess="{!c.onSuccess}"
+								  oncancel="{!c.onCancel}"
+                                  onerror="{!c.onError}"
+                                  onsubmit="{!c.onSubmit}"
+                                  />
+        </div>
+        </div>
+    </div>
+    <div aura:id="overlay" class="slds-backdrop slds-backdrop--open"></div>
+</aura:component>
