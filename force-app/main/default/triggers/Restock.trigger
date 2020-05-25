@@ -16,6 +16,10 @@ trigger Restock on Order (before delete,after update,after insert) {
     	List<Id> mailinglist = new List<Id>();
     	mailinglist.add(ord.Id);
 		mailinglist.add(ord.AccountId);
+        if(ord.ShipToContactId!=null)
+            mailinglist.add(ord.ShipToContactId);
+		if(ord.BillToContactId!=null)
+            mailinglist.add(ord.BillToContactId);
 
     	EmailTemplate et1=[Select id from EmailTemplate where DeveloperName=:'Order_Confirmation'];
     	EmailTemplate et2=[Select id from EmailTemplate where DeveloperName=:'Order_Processing'];
@@ -32,19 +36,17 @@ trigger Restock on Order (before delete,after update,after insert) {
             	}
             	update(products);
             	mailinglist.add(et3.id);
+                EmailNotification.sendMail(mailinglist);
         	}
         	if(ord.Approval_Status__c=='Approved'&&ord.Stage__c=='In Process'){
             	insert new Invoice__c(Order_Reference__c=ord.Id,Account_Reference__c=ord.AccountId);
             	mailinglist.add(et2.id);
+                EmailNotification.sendMail(mailinglist);
         	}
     	}
     	else if(Trigger.isInsert){
         	mailinglist.add(et1.id);
+            EmailNotification.sendMail(mailinglist);
     	}
-        if(ord.ShipToContactId!=null)
-            mailinglist.add(ord.ShipToContactId);
-		if(ord.BillToContactId!=null)
-            mailinglist.add(ord.BillToContactId);
-        EmailNotification.sendMail(mailinglist);
     }
 }
